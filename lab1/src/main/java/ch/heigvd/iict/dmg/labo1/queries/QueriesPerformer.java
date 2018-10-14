@@ -15,11 +15,13 @@ import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
+import javax.print.Doc;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.LinkedList;
 
 public class QueriesPerformer {
 	
@@ -45,7 +47,7 @@ public class QueriesPerformer {
 	public void printTopRankingTerms(String field, int numTerms) throws Exception {
 		HighFreqTerms hft = new HighFreqTerms();
 
-		TermStats[] stats = hft.getHighFreqTerms(indexReader, numTerms, field, Comparator.comparingLong(a -> a.totalTermFreq));
+		TermStats[] stats = hft.getHighFreqTerms(indexReader, numTerms, field, Comparator.comparingInt(a -> a.docFreq));
 
 		String[] toDisplay = new String[10];
 		for (int i = 0; i < 10; i++) {
@@ -54,10 +56,9 @@ public class QueriesPerformer {
 
 	    System.out.println("Top ranking terms for field ["  + field +"] are: " + Arrays.toString(toDisplay));
 	}
-	
-	public void query(String q) {
-		System.out.println("Searching for [" + q +"]");
 
+
+	public ScoreDoc[] performQuery(String q){
 		QueryParser parser = new QueryParser("summary", analyzer);
 		Query query = null;
 		ScoreDoc[] hits = null;
@@ -74,16 +75,65 @@ public class QueriesPerformer {
 			e.printStackTrace();
 		}
 
+		return hits;
+	}
+
+	public void query(String q) {
+		System.out.println("Searching for [" + q +"]");
+		ScoreDoc[] hits = performQuery(q);
+		displayResults(hits);
+	}
+
+	public void displayResults(ScoreDoc[] hits){
 		System.out.println("Results found: " + hits.length);
 		for(ScoreDoc hit: hits){
 			Document doc = null;
 			try {
-				doc = indexSearcher.doc(hit.doc);
+				doc = (Document) indexSearcher.doc(hit.doc);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			System.out.println(doc.get("id") + ": " + doc.get("title") + " (" + hit.score + ")");
 		}
+	}
+
+	public void queryAnd(String q1, String q2){
+
+		ScoreDoc[] hits1 = performQuery(q1);
+		ScoreDoc[] hits2 = performQuery(q2);
+		LinkedList<ScoreDoc> hitsRes = new LinkedList<>();
+
+		for(ScoreDoc hit1 : hits1){
+			for(ScoreDoc hit2 : hits2){
+				if(hit2.doc > hit1.doc)		//verif just
+					break;
+				if(hit1.doc == hit2.doc){
+					hitsRes.add(hit1);
+					break;
+				}
+			}
+		}
+
+		displayResults((ScoreDoc[]) hitsRes.toArray());
+	}
+
+	public void queryTheFirstButNotSecond(String shouldHave, String shouldNotHave){
+		ScoreDoc[] hits1 = performQuery(shouldHave);
+		ScoreDoc[] hits2 = performQuery(shouldNotHave);
+		LinkedList<ScoreDoc> hitsRes = new LinkedList<>();
+
+		for(ScoreDoc hit1 : hits1){
+			for(ScoreDoc hit2 : hits2){
+				if(hit2.doc > hit1.doc)		//verif just
+					break;
+				if(hit1.doc == hit2.doc){
+					hitsRes.add(hit1);
+					break;
+				}
+			}
+		}
+
+		displayResults((ScoreDoc[]) hitsRes.toArray());
 	}
 	 
 	public void close() {
