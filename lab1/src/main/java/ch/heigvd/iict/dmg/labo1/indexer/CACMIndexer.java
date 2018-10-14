@@ -2,7 +2,8 @@ package ch.heigvd.iict.dmg.labo1.indexer;
 
 import ch.heigvd.iict.dmg.labo1.parsers.ParserListener;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.document.Document;
+import org.apache.lucene.document.*;
+import org.apache.lucene.index.IndexOptions;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
@@ -49,9 +50,24 @@ public class CACMIndexer implements ParserListener {
 	public void onNewDocument(Long id, String authors, String title, String summary) {
 		Document doc = new Document();
 
-		// TODO student: add to the document "doc" the fields given in
-		// parameters. You job is to use the right Field and FieldType
-		// for these parameters.
+		FieldType fieldType = new FieldType();
+		fieldType.setIndexOptions(IndexOptions.DOCS);
+		fieldType.setTokenized(true);
+		fieldType.freeze();
+
+		Field field = new Field("id", String.valueOf(id), fieldType);
+		doc.add(field);
+
+		if (summary != null) {
+			field = new Field("summary", summary, fieldType);
+			doc.add(field);
+		}
+
+		field = new Field("authors", authors, fieldType);
+		doc.add(field);
+
+		field = new Field("title", title, fieldType);
+		doc.add(field);
 
 		try {
 			this.indexWriter.addDocument(doc);
