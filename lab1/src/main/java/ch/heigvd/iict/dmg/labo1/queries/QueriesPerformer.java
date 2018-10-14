@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Comparator;
 
 public class QueriesPerformer {
 	
@@ -44,15 +43,25 @@ public class QueriesPerformer {
 
 	public void printTopRankingTerms(String field, int numTerms) throws Exception {
 		HighFreqTerms hft = new HighFreqTerms();
+		TermStats[] stats = new TermStats[10];
 
-		TermStats[] stats = hft.getHighFreqTerms(indexReader, numTerms, field, Comparator.comparingLong(a -> a.totalTermFreq));
+		if (field.equals("authors")) {
+			stats = hft.getHighFreqTerms(indexReader, numTerms, field, (a, b) -> Long.compare(a.docFreq, b.docFreq));
+		}
+		else {
+			stats = hft.getHighFreqTerms(indexReader, numTerms, field, (a, b) -> Long.compare(b.totalTermFreq, a.totalTermFreq));
+		}
+
+
 
 		String[] toDisplay = new String[10];
 		for (int i = 0; i < 10; i++) {
 			toDisplay[i] = stats[i].termtext.utf8ToString();
 		}
 
-	    System.out.println("Top ranking terms for field ["  + field +"] are: " + Arrays.toString(toDisplay));
+
+
+	    System.out.println("Top ranking terms for field ["  + field + "] are: " + Arrays.toString(toDisplay));
 	}
 	
 	public void query(String q) {
