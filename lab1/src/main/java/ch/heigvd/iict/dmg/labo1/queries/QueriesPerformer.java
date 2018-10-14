@@ -18,6 +18,7 @@ import org.apache.lucene.store.FSDirectory;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Comparator;
 
 public class QueriesPerformer {
@@ -51,7 +52,7 @@ public class QueriesPerformer {
 			toDisplay[i] = stats[i].termtext.utf8ToString();
 		}
 
-	    System.out.println("Top ranking terms for field ["  + field +"] are: " + toDisplay);
+	    System.out.println("Top ranking terms for field ["  + field +"] are: " + Arrays.toString(toDisplay));
 	}
 	
 	public void query(String q) {
