@@ -8,11 +8,9 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.search.similarities.Similarity;
 
-import java.io.IOException;
-
 public class Main {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws Exception {
 
 		// 1.1. create an analyzer
 		Analyzer analyser = getAnalyzer();
@@ -39,7 +37,7 @@ public class Main {
 		
 	}
 
-	private static void readingIndex(QueriesPerformer queriesPerformer) {
+	private static void readingIndex(QueriesPerformer queriesPerformer) throws Exception {
 		queriesPerformer.printTopRankingTerms("authors", 10);
 		queriesPerformer.printTopRankingTerms("title", 10);
 	}

@@ -1,9 +1,16 @@
 package ch.heigvd.iict.dmg.labo1.queries;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.misc.HighFreqTerms;
+import org.apache.lucene.misc.TermStats;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -11,6 +18,7 @@ import org.apache.lucene.store.FSDirectory;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.Comparator;
 
 public class QueriesPerformer {
 	
@@ -33,18 +41,48 @@ public class QueriesPerformer {
 		}
 	}
 
-	public void printTopRankingTerms(String field, int numTerms) {
-		// TODO student
-		// This methods print the top ranking term for a field.
-		// See "Reading Index".
-	    System.out.println("Top ranking terms for field ["  + field +"] are: ");
+	public void printTopRankingTerms(String field, int numTerms) throws Exception {
+		HighFreqTerms hft = new HighFreqTerms();
+
+		TermStats[] stats = hft.getHighFreqTerms(indexReader, numTerms, field, Comparator.comparingLong(a -> a.totalTermFreq));
+
+		String[] toDisplay = new String[10];
+		for (int i = 0; i < 10; i++) {
+			toDisplay[i] = stats[i].termtext.utf8ToString();
+		}
+
+	    System.out.println("Top ranking terms for field ["  + field +"] are: " + toDisplay);
 	}
 	
 	public void query(String q) {
-		// TODO student
-		// See "Searching" section
-
 		System.out.println("Searching for [" + q +"]");
+
+		QueryParser parser = new QueryParser("summary", analyzer);
+		Query query = null;
+		ScoreDoc[] hits = null;
+
+		try {
+			query = parser.parse(q);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			hits = indexSearcher.search(query, 1000).scoreDocs;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println("Results found: " + hits.length);
+		for(ScoreDoc hit: hits){
+			Document doc = null;
+			try {
+				doc = indexSearcher.doc(hit.doc);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			System.out.println(doc.get("id") + ": " + doc.get("title") + " (" + hit.score + ")");
+		}
 	}
 	 
 	public void close() {
