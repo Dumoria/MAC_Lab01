@@ -56,12 +56,6 @@ public class Main {
 	}
 
 	private static Analyzer getAnalyzer() {
-	    // TODO student... For the part "Indexing and Searching CACM collection
-		// - Indexing" use, as indicated in the instructions,
-		// the StandardAnalyzer class.
-		//
-		// For the next part "Using different Analyzers" modify this method
-		// and return the appropriate Analyzers asked.
 
 		//return new StandardAnalyzer();
 		//return new WhitespaceAnalyzer();

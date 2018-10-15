@@ -96,7 +96,7 @@ public class QueriesPerformer {
 		for(ScoreDoc hit: hits){
 			Document doc = null;
 			try {
-				doc = (Document) indexSearcher.doc(hit.doc);
+				doc = indexSearcher.doc(hit.doc);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
