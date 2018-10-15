@@ -3,9 +3,9 @@ package ch.heigvd.iict.dmg.labo1;
 import ch.heigvd.iict.dmg.labo1.indexer.CACMIndexer;
 import ch.heigvd.iict.dmg.labo1.parsers.CACMParser;
 import ch.heigvd.iict.dmg.labo1.queries.QueriesPerformer;
-import ch.heigvd.iict.dmg.labo1.similarities.MySimilarity;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
+import org.apache.lucene.search.similarities.ClassicSimilarity;
 import org.apache.lucene.search.similarities.Similarity;
 
 public class Main {
@@ -16,8 +16,8 @@ public class Main {
 		Analyzer analyser = getAnalyzer();
 
 		// TODO student "Tuning the Lucene Score"
-//		Similarity similarity = null;//new MySimilarity();
-		Similarity similarity = new MySimilarity();
+		// Similarity similarity = new MySimilarity();
+		Similarity similarity = new ClassicSimilarity();
 		
 		CACMIndexer indexer = new CACMIndexer(analyser, similarity);
 		indexer.openIndex();

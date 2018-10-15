@@ -4,6 +4,20 @@ import org.apache.lucene.search.similarities.ClassicSimilarity;
 
 public class MySimilarity extends ClassicSimilarity {
 
-	// TODO student
-	// Implement the functions described in section "Tuning the Lucene Score"
+	public MySimilarity() {}
+
+	@Override
+	public float tf(float freq) {
+		return (float) Math.log(freq) + 1;
+	}
+
+	@Override
+	public float idf(long docFreq, long numDocs) {
+		return (float) Math.log(numDocs / docFreq + 1) + 1;
+	}
+
+	@Override
+	public float coord(int overlap, int maxOverlap) {
+		return (float) Math.sqrt(overlap / maxOverlap);
+	}
 }
