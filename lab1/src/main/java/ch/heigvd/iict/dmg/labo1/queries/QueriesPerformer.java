@@ -77,14 +77,15 @@ public class QueriesPerformer {
 		}
 
 		System.out.println("Results found: " + hits.length);
-		for(ScoreDoc hit: hits){
+
+		for(int i = 0; i < 10 && i < hits.length; ++i){
 			Document doc = null;
 			try {
-				doc = indexSearcher.doc(hit.doc);
+				doc = (Document) indexSearcher.doc(hits[i].doc);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			System.out.println(doc.get("id") + ": " + doc.get("title") + " (" + hit.score + ")");
+			System.out.println(doc.get("id") + ": " + doc.get("title") + " (" + hits[i].score + ")");
 		}
 	}
 

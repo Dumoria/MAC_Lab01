@@ -45,23 +45,18 @@ public class Main {
 	private static void searching(QueriesPerformer queriesPerformer) {
 		// Example
 		queriesPerformer.query("compiler program");
-        queriesPerformer.query("q");						//Process a new query
 
 		//Publications containing the term "Information Retrieval"
 		queriesPerformer.query("Information Retrieval");
-		queriesPerformer.query("q");
 
 		//Publications containing both "Information" and "Retrieval"
 		queriesPerformer.query("\"Information\" AND \"Retrieval\"");
-		queriesPerformer.query("q");
 
 		//Publications containing at least the term "Retrieval" and, possibly "Information" but not "Database"
-		queriesPerformer.query("+\"Retrieval\" \"Retrieval\" NOT \"Retrieval\"");
-		queriesPerformer.query("q");
+		queriesPerformer.query("+\"Retrieval\" \"Information\" NOT \"Database\"");
 
 		//Publications containing a term starting with "Info"
 		queriesPerformer.query("Info*");
-		queriesPerformer.query("q");
 
 		//Publications containing the term "Information" close to "Retrieval" (max distance 5)
 		queriesPerformer.query( "\"Information Retrieval\"~5");
