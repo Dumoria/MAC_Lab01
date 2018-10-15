@@ -49,12 +49,7 @@ public class QueriesPerformer {
 		TermStats[] stats = new TermStats[numTerms];
 		HighFreqTerms.DocFreqComparator cmp = new HighFreqTerms.DocFreqComparator();
 
-		if (field.equals("authors")) {
-			stats = HighFreqTerms.getHighFreqTerms(indexReader, numTerms, field, cmp);
-		}
-		else {
-			stats = HighFreqTerms.getHighFreqTerms(indexReader, numTerms, field, cmp);
-		}
+		stats = HighFreqTerms.getHighFreqTerms(indexReader, numTerms, field, cmp);
 
 		String[] toDisplay = new String[numTerms];
 		for (int i = 0; i < numTerms; i++) {
