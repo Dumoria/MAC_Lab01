@@ -51,18 +51,21 @@ public class CACMIndexer implements ParserListener {
 		Document doc = new Document();
 
 		FieldType fieldType = new FieldType();
-		fieldType.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
+		fieldType.setIndexOptions(IndexOptions.DOCS);
 		fieldType.setTokenized(true);
 		fieldType.freeze();
 
-		doc.add(new StringField("id", String.valueOf(id), Field.Store.YES));
+		if (id != null)
+			doc.add(new StoredField("id", id));
+
+		if (authors != null)
+			doc.add(new StringField("authors", authors, Field.Store.YES));
+
+		if (title != null)
+			doc.add(new StringField("title", title, Field.Store.YES));
 
 		if (summary != null)
 			doc.add(new TextField("summary", summary, Field.Store.YES));
-
-		doc.add(new StringField("authors", authors, Field.Store.YES));
-
-		doc.add(new StringField("title", title, Field.Store.YES));
 
 		try {
 			this.indexWriter.addDocument(doc);

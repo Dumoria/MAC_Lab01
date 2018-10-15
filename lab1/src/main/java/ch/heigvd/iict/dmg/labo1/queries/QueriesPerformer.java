@@ -43,21 +43,24 @@ public class QueriesPerformer {
 
 	public void printTopRankingTerms(String field, int numTerms) throws Exception {
 		HighFreqTerms hft = new HighFreqTerms();
-		TermStats[] stats = new TermStats[10];
+		TermStats[] stats;
+		String[] toDisplay = new String[numTerms];
 
 		if (field.equals("authors")) {
-			stats = hft.getHighFreqTerms(indexReader, numTerms, field, (a, b) -> Long.compare(a.docFreq, b.docFreq));
+			stats = hft.getHighFreqTerms(indexReader, 1000, field, new HighFreqTerms.DocFreqComparator());
+			for (int i = 0; i < 10; i++) {
+				toDisplay[i] = stats[i+1].termtext.utf8ToString();
+			}
 		}
 		else {
-			stats = hft.getHighFreqTerms(indexReader, numTerms, field, (a, b) -> Long.compare(b.totalTermFreq, a.totalTermFreq));
+			stats = hft.getHighFreqTerms(indexReader, 1000, field, new HighFreqTerms.TotalTermFreqComparator());
+			for (int i = 0; i < 10; i++) {
+				toDisplay[i] = stats[i+1].termtext.utf8ToString();
+			}
 		}
 
 
 
-		String[] toDisplay = new String[10];
-		for (int i = 0; i < 10; i++) {
-			toDisplay[i] = stats[i].termtext.utf8ToString();
-		}
 
 
 
@@ -65,7 +68,7 @@ public class QueriesPerformer {
 	}
 	
 	public void query(String q) {
-		System.out.println("Searching for [" + q +"]");
+		System.out.println("Searching for [" + q + "]");
 
 		QueryParser parser = new QueryParser("summary", analyzer);
 		Query query = null;
