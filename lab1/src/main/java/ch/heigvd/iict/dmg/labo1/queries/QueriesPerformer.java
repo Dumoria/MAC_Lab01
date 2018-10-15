@@ -48,9 +48,6 @@ public class QueriesPerformer {
 		TermStats[] stats;
 		String[] toDisplay = new String[numTerms];
 
-<<<<<<< HEAD
-		stats = HighFreqTerms.getHighFreqTerms(indexReader, numTerms, field, cmp);
-=======
 		if (field.equals("authors")) {
 			stats = HighFreqTerms.getHighFreqTerms(indexReader, numTerms, field, new HighFreqTerms.DocFreqComparator());
 
@@ -59,7 +56,6 @@ public class QueriesPerformer {
 			stats = HighFreqTerms.getHighFreqTerms(indexReader, numTerms, field, new HighFreqTerms.TotalTermFreqComparator());
 
 		}
->>>>>>> c1a2a511fd6f0ce38e772345aaea381fb329e877
 
 		for (int i = 0; i < numTerms; i++) {
 			toDisplay[i] = stats[i].termtext.utf8ToString();
