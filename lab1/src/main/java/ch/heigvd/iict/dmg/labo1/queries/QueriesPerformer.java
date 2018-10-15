@@ -46,30 +46,23 @@ public class QueriesPerformer {
 	}
 
 	public void printTopRankingTerms(String field, int numTerms) throws Exception {
-		HighFreqTerms hft = new HighFreqTerms();
-		TermStats[] stats = new TermStats[10];
+		TermStats[] stats = new TermStats[numTerms];
 		HighFreqTerms.DocFreqComparator cmp = new HighFreqTerms.DocFreqComparator();
 
 		if (field.equals("authors")) {
-			stats = hft.getHighFreqTerms(indexReader, numTerms, field, cmp);
+			stats = HighFreqTerms.getHighFreqTerms(indexReader, numTerms, field, cmp);
 		}
 		else {
-			stats = hft.getHighFreqTerms(indexReader, numTerms, field, cmp);
+			stats = HighFreqTerms.getHighFreqTerms(indexReader, numTerms, field, cmp);
 		}
 
-		String[] toDisplay = new String[10];
-		for (int i = 0; i < 10; i++) {
+		String[] toDisplay = new String[numTerms];
+		for (int i = 0; i < numTerms; i++) {
 			toDisplay[i] = stats[i].termtext.utf8ToString();
 		}
 
 	    System.out.println("Top ranking terms for field ["  + field + "] are: " + Arrays.toString(toDisplay));
 
-		/*System.out.print("Top ranking terms for field ["  + field + "] are: [");
-		for (int i = 0; i < 10; i++) {
-			System.out.print(stats[i].termtext.utf8ToString());
-
-		}
-		System.out.println("]");*/
 	}
 
 	//----------------Query-------------------
