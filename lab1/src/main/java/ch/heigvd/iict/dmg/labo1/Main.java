@@ -46,6 +46,17 @@ public class Main {
 		// Example
 		queriesPerformer.query("compiler program");
 
+		//Publications containing the term "Information Retrieval"
+		queriesPerformer.query("Information Retrieval");
+
+		//Publications containing both "Information" and "Retrieval"
+		queriesPerformer.query("\"Information\" AND \"Retrieval\"");
+
+		//Publications containing at least the term "Retrieval" and, possibly "Information" but not "Database"
+		//Publications containing a term starting with "Info"
+		//Publications containing the term "Information" close to "Retrieval" (max distance 5)
+
+
 		// TODO student
         // queriesPerformer.query(<containing the term Information Retrieval>);
 		// queriesPerformer.query(<containing both Information and Retrieval>);
