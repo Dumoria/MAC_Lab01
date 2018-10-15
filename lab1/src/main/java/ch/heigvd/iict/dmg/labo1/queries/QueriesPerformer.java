@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.LinkedList;
 
 
 public class QueriesPerformer {
@@ -48,14 +47,16 @@ public class QueriesPerformer {
 		TermStats[] stats;
 		String[] toDisplay = new String[numTerms];
 
-		stats = HighFreqTerms.getHighFreqTerms(indexReader, numTerms, field, new HighFreqTerms.DocFreqComparator());
+		if (field.equals("authors"))
+			stats = HighFreqTerms.getHighFreqTerms(indexReader, numTerms, field, new HighFreqTerms.DocFreqComparator());
+		else
+			stats = HighFreqTerms.getHighFreqTerms(indexReader, numTerms, field, new HighFreqTerms.TotalTermFreqComparator());
 
 		for (int i = 0; i < numTerms; i++) {
 			toDisplay[i] = stats[i].termtext.utf8ToString();
 		}
 
 	    System.out.println("Top ranking terms for field ["  + field + "] are: " + Arrays.toString(toDisplay));
-
 	}
 
 	public void query(String q) {
@@ -81,7 +82,7 @@ public class QueriesPerformer {
 		for(int i = 0; i < 10 && i < hits.length; ++i){
 			Document doc = null;
 			try {
-				doc = (Document) indexSearcher.doc(hits[i].doc);
+				doc = indexSearcher.doc(hits[i].doc);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

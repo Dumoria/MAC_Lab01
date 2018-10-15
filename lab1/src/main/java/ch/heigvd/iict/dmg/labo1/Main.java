@@ -15,7 +15,6 @@ public class Main {
 		// 1.1. create an analyzer
 		Analyzer analyser = getAnalyzer();
 
-		// TODO student "Tuning the Lucene Score"
 		// Similarity similarity = new MySimilarity();
 		Similarity similarity = new ClassicSimilarity();
 		
@@ -34,7 +33,6 @@ public class Main {
 		searching(queriesPerformer);
 
 		queriesPerformer.close();
-		
 	}
 
 	private static void readingIndex(QueriesPerformer queriesPerformer) throws Exception {
@@ -60,14 +58,13 @@ public class Main {
 
 		//Publications containing the term "Information" close to "Retrieval" (max distance 5)
 		queriesPerformer.query( "\'Information Retrieval\'~5");
-
 	}
 
 	private static Analyzer getAnalyzer() {
 
+		return new EnglishAnalyzer();
 		//return new StandardAnalyzer();
 		//return new WhitespaceAnalyzer();
-		return new EnglishAnalyzer();
 		//return new ShingleAnalyzerWrapper();
 		//return new ShingleAnalyzerWrapper();
 		//return new StopAnalyzer();
