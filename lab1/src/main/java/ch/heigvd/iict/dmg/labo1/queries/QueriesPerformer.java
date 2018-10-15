@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedList;
 
+
 public class QueriesPerformer {
 	
 	private Analyzer		analyzer		= null;
@@ -46,16 +47,32 @@ public class QueriesPerformer {
 
 	public void printTopRankingTerms(String field, int numTerms) throws Exception {
 		HighFreqTerms hft = new HighFreqTerms();
+		TermStats[] stats = new TermStats[10];
+		HighFreqTerms.DocFreqComparator cmp = new HighFreqTerms.DocFreqComparator();
 
-		TermStats[] stats = hft.getHighFreqTerms(indexReader, numTerms, field, Comparator.comparingInt(a -> a.docFreq));
+		if (field.equals("authors")) {
+			stats = hft.getHighFreqTerms(indexReader, numTerms, field, cmp);
+		}
+		else {
+			stats = hft.getHighFreqTerms(indexReader, numTerms, field, cmp);
+		}
 
 		String[] toDisplay = new String[10];
 		for (int i = 0; i < 10; i++) {
 			toDisplay[i] = stats[i].termtext.utf8ToString();
 		}
 
-	    System.out.println("Top ranking terms for field ["  + field +"] are: " + Arrays.toString(toDisplay));
+	    System.out.println("Top ranking terms for field ["  + field + "] are: " + Arrays.toString(toDisplay));
+
+		/*System.out.print("Top ranking terms for field ["  + field + "] are: [");
+		for (int i = 0; i < 10; i++) {
+			System.out.print(stats[i].termtext.utf8ToString());
+
+		}
+		System.out.println("]");*/
 	}
+
+	//----------------Query-------------------
 
 
 	public ScoreDoc[] performQuery(String q){
@@ -124,18 +141,20 @@ public class QueriesPerformer {
 
 		for(ScoreDoc hit1 : hits1){
 			for(ScoreDoc hit2 : hits2){
-				if(hit2.doc > hit1.doc)		//verif just
-					break;
 				if(hit1.doc == hit2.doc){
-					hitsRes.add(hit1);
 					break;
 				}
+				if(hit2.doc > hit1.doc)		//verif just
+					hitsRes.add(hit1);
+					break;
 			}
 		}
 
 		displayResults((ScoreDoc[]) hitsRes.toArray());
 	}
-	 
+
+	//public void
+
 	public void close() {
 		if(this.indexReader != null)
 			try { this.indexReader.close(); } catch(IOException e) { /* BEST EFFORT */ }

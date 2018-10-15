@@ -22,7 +22,7 @@ public class CACMIndexer implements ParserListener {
 	
 	private Analyzer 	analyzer 		= null;
 	private Similarity 	similarity 		= null;
-	
+
 	public CACMIndexer(Analyzer analyzer, Similarity similarity) {
 		this.analyzer = analyzer;
 		this.similarity = similarity;
@@ -51,23 +51,21 @@ public class CACMIndexer implements ParserListener {
 		Document doc = new Document();
 
 		FieldType fieldType = new FieldType();
-		fieldType.setIndexOptions(IndexOptions.DOCS);
+		fieldType.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
 		fieldType.setTokenized(true);
 		fieldType.freeze();
 
-		Field field = new Field("id", String.valueOf(id), fieldType);
-		doc.add(field);
+		doc.add(new StoredField("id", String.valueOf(id)));
 
-		if (summary != null) {
-			field = new Field("summary", summary, fieldType);
-			doc.add(field);
+		if (!authors.equals("")) {
+			doc.add(new StringField("authors", authors.substring(0, authors.length() - 2), Field.Store.YES));
 		}
 
-		field = new Field("authors", authors, fieldType);
-		doc.add(field);
+		if (title != null)
+			doc.add(new StringField("title", title, Field.Store.YES));
 
-		field = new Field("title", title, fieldType);
-		doc.add(field);
+		if (summary != null)
+			doc.add(new TextField("summary", summary, Field.Store.YES));
 
 		try {
 			this.indexWriter.addDocument(doc);
