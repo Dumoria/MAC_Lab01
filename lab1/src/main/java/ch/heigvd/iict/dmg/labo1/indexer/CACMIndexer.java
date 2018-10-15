@@ -58,8 +58,10 @@ public class CACMIndexer implements ParserListener {
 		if (id != null)
 			doc.add(new StoredField("id", id));
 
-		if (authors != null)
-			doc.add(new StringField("authors", authors, Field.Store.YES));
+		if (!authors.equals("")) {
+			//authors.split(";")
+			doc.add(new StringField("authors", authors.substring(0, authors.length() - 2), Field.Store.YES));
+		}
 
 		if (title != null)
 			doc.add(new StringField("title", title, Field.Store.YES));

@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.LinkedList;
+
 
 public class QueriesPerformer {
 	
@@ -42,34 +44,29 @@ public class QueriesPerformer {
 	}
 
 	public void printTopRankingTerms(String field, int numTerms) throws Exception {
-		HighFreqTerms hft = new HighFreqTerms();
+
 		TermStats[] stats;
 		String[] toDisplay = new String[numTerms];
 
 		if (field.equals("authors")) {
-			stats = hft.getHighFreqTerms(indexReader, 1000, field, new HighFreqTerms.DocFreqComparator());
-			for (int i = 0; i < 10; i++) {
-				toDisplay[i] = stats[i+1].termtext.utf8ToString();
-			}
+			stats = HighFreqTerms.getHighFreqTerms(indexReader, numTerms, field, new HighFreqTerms.DocFreqComparator());
+
 		}
 		else {
-			stats = hft.getHighFreqTerms(indexReader, 1000, field, new HighFreqTerms.TotalTermFreqComparator());
-			for (int i = 0; i < 10; i++) {
-				toDisplay[i] = stats[i+1].termtext.utf8ToString();
-			}
+			stats = HighFreqTerms.getHighFreqTerms(indexReader, numTerms, field, new HighFreqTerms.TotalTermFreqComparator());
+
 		}
 
-
-
-
-
+		for (int i = 0; i < numTerms; i++) {
+			toDisplay[i] = stats[i].termtext.utf8ToString();
+		}
 
 	    System.out.println("Top ranking terms for field ["  + field + "] are: " + Arrays.toString(toDisplay));
-	}
-	
-	public void query(String q) {
-		System.out.println("Searching for [" + q + "]");
 
+	}
+	//----------------Query-------------------
+
+	private ScoreDoc[] performQuery(String q){
 		QueryParser parser = new QueryParser("summary", analyzer);
 		Query query = null;
 		ScoreDoc[] hits = null;
@@ -86,18 +83,69 @@ public class QueriesPerformer {
 			e.printStackTrace();
 		}
 
+		return hits;
+	}
+
+	public void query(String q) {
+		System.out.println("Searching for [" + q +"]");
+		ScoreDoc[] hits = performQuery(q);
+		displayResults(hits);
+	}
+
+	private void displayResults(ScoreDoc[] hits){
 		System.out.println("Results found: " + hits.length);
 		for(ScoreDoc hit: hits){
 			Document doc = null;
 			try {
-				doc = indexSearcher.doc(hit.doc);
+				doc = (Document) indexSearcher.doc(hit.doc);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			System.out.println(doc.get("id") + ": " + doc.get("title") + " (" + hit.score + ")");
 		}
 	}
-	 
+
+	public void queryAnd(String q1, String q2){
+
+		ScoreDoc[] hits1 = performQuery(q1);
+		ScoreDoc[] hits2 = performQuery(q2);
+		LinkedList<ScoreDoc> hitsRes = new LinkedList<>();
+
+		for(ScoreDoc hit1 : hits1){
+			for(ScoreDoc hit2 : hits2){
+				if(hit2.doc > hit1.doc)		//verif just
+					break;
+				if(hit1.doc == hit2.doc){
+					hitsRes.add(hit1);
+					break;
+				}
+			}
+		}
+
+		displayResults((ScoreDoc[]) hitsRes.toArray());
+	}
+
+	public void queryTheFirstButNotSecond(String shouldHave, String shouldNotHave){
+		ScoreDoc[] hits1 = performQuery(shouldHave);
+		ScoreDoc[] hits2 = performQuery(shouldNotHave);
+		LinkedList<ScoreDoc> hitsRes = new LinkedList<>();
+
+		for(ScoreDoc hit1 : hits1){
+			for(ScoreDoc hit2 : hits2){
+				if(hit1.doc == hit2.doc){
+					break;
+				}
+				if(hit2.doc > hit1.doc)		//verif just
+					hitsRes.add(hit1);
+					break;
+			}
+		}
+
+		displayResults((ScoreDoc[]) hitsRes.toArray());
+	}
+
+	//public void
+
 	public void close() {
 		if(this.indexReader != null)
 			try { this.indexReader.close(); } catch(IOException e) { /* BEST EFFORT */ }
