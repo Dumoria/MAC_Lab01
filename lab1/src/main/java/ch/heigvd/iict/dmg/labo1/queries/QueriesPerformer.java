@@ -54,7 +54,6 @@ public class QueriesPerformer {
 		}
 		else {
 			stats = HighFreqTerms.getHighFreqTerms(indexReader, numTerms, field, new HighFreqTerms.TotalTermFreqComparator());
-
 		}
 
 		for (int i = 0; i < numTerms; i++) {
