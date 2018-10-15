@@ -53,17 +53,14 @@ public class Main {
 		queriesPerformer.query("\"Information\" AND \"Retrieval\"");
 
 		//Publications containing at least the term "Retrieval" and, possibly "Information" but not "Database"
+		queriesPerformer.query("+\"Retrieval\" \"Information\" NOT \"Database\"");
+
 		//Publications containing a term starting with "Info"
+		queriesPerformer.query("Info*");
+
 		//Publications containing the term "Information" close to "Retrieval" (max distance 5)
+		queriesPerformer.query( "\'Information Retrieval\'~5");
 
-
-		// TODO student
-        // queriesPerformer.query(<containing the term Information Retrieval>);
-		// queriesPerformer.query(<containing both Information and Retrieval>);
-        // and so on for all the queries asked on the instructions...
-        //
-		// Reminder: it must print the total number of results and
-		// the top 10 results.
 	}
 
 	private static Analyzer getAnalyzer() {
