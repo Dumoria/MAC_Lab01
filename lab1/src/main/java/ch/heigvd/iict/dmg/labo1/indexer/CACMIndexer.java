@@ -51,11 +51,12 @@ public class CACMIndexer implements ParserListener {
 		Document doc = new Document();
 
 		FieldType fieldType = new FieldType();
-		fieldType.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
+		fieldType.setIndexOptions(IndexOptions.DOCS);
 		fieldType.setTokenized(true);
 		fieldType.freeze();
 
-		doc.add(new StoredField("id", String.valueOf(id)));
+		if (id != null)
+			doc.add(new StoredField("id", id));
 
 		if (!authors.equals("")) {
 			//authors.split(";")

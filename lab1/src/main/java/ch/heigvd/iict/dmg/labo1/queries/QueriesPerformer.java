@@ -15,12 +15,10 @@ import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
-import javax.print.Doc;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.LinkedList;
 
 
@@ -46,12 +44,23 @@ public class QueriesPerformer {
 	}
 
 	public void printTopRankingTerms(String field, int numTerms) throws Exception {
-		TermStats[] stats = new TermStats[numTerms];
-		HighFreqTerms.DocFreqComparator cmp = new HighFreqTerms.DocFreqComparator();
 
-		stats = HighFreqTerms.getHighFreqTerms(indexReader, numTerms, field, cmp);
-
+		TermStats[] stats;
 		String[] toDisplay = new String[numTerms];
+
+<<<<<<< HEAD
+		stats = HighFreqTerms.getHighFreqTerms(indexReader, numTerms, field, cmp);
+=======
+		if (field.equals("authors")) {
+			stats = HighFreqTerms.getHighFreqTerms(indexReader, numTerms, field, new HighFreqTerms.DocFreqComparator());
+
+		}
+		else {
+			stats = HighFreqTerms.getHighFreqTerms(indexReader, numTerms, field, new HighFreqTerms.TotalTermFreqComparator());
+
+		}
+>>>>>>> c1a2a511fd6f0ce38e772345aaea381fb329e877
+
 		for (int i = 0; i < numTerms; i++) {
 			toDisplay[i] = stats[i].termtext.utf8ToString();
 		}
@@ -59,11 +68,9 @@ public class QueriesPerformer {
 	    System.out.println("Top ranking terms for field ["  + field + "] are: " + Arrays.toString(toDisplay));
 
 	}
-
 	//----------------Query-------------------
 
-
-	public ScoreDoc[] performQuery(String q){
+	private ScoreDoc[] performQuery(String q){
 		QueryParser parser = new QueryParser("summary", analyzer);
 		Query query = null;
 		ScoreDoc[] hits = null;
@@ -89,7 +96,7 @@ public class QueriesPerformer {
 		displayResults(hits);
 	}
 
-	public void displayResults(ScoreDoc[] hits){
+	private void displayResults(ScoreDoc[] hits){
 		System.out.println("Results found: " + hits.length);
 		for(ScoreDoc hit: hits){
 			Document doc = null;
