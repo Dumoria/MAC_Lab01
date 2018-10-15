@@ -51,8 +51,9 @@ public class CACMIndexer implements ParserListener {
 		Document doc = new Document();
 
 		FieldType fieldType = new FieldType();
-		fieldType.setIndexOptions(IndexOptions.DOCS);
+		fieldType.setIndexOptions(IndexOptions.DOCS_AND_FREQS);
 		fieldType.setTokenized(true);
+		fieldType.setStored(true);
 		fieldType.freeze();
 
 		if (id != null)
@@ -67,7 +68,7 @@ public class CACMIndexer implements ParserListener {
 		}
 
 		if (title != null)
-			doc.add(new StringField("title", title, Field.Store.YES));
+			doc.add(new Field("title", title, fieldType));
 
 		if (summary != null)
 			doc.add(new TextField("summary", summary, Field.Store.YES));
