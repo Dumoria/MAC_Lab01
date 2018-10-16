@@ -9,7 +9,7 @@ The goal of this laboratory is to get familiar with the <strong>Lucene</strong> 
 
 ## Section D
 
-###### 1)   <strong>Does the command line demo use stopword removal? Explain how you find out the answer.</strong>
+###### 1)   <strong>Does the command line demo use stopword removal?</strong>
 
 <p style="text-align:justify;">Yes, the initial query: “Scientific Business and Applications” was transformed into: “scientific business applications”.
 </p>
@@ -174,9 +174,8 @@ The following method goes in the QueriesPerformer.java file:
 	}
 
 ### Searching
-<p style="text-align:justify;">Searching for [compiler program]
-, results found: 578<p>
 
+##### Searching for [compiler program], results found: 578
 3189: An Algebraic Compiler for the FORTRAN Assembly Program (1.0367663)<br/>
 1459: Requirements for Real-Time Languages (0.9427518)<br/>
 2652: Reduction of Compilation Costs Through Language Contraction (0.93779767)<br/>
@@ -188,9 +187,7 @@ The following method goes in the QueriesPerformer.java file:
 2944: Shifting Garbage Collection Overhead to Compile Time (0.7542014)<br/>
 637: A NELIAC-Generated 7090-1401 Compiler (0.74336267)
 
-
-
-<p style="text-align:justify;">Searching for [Information Retrieval], results found: 188<p>
+##### Searching for [Information Retrieval], results found: 188
 1457: Data Manipulation and Programming Problemsin Automatic Information Retrieval (1.180699)<br/>
 891: Everyman's Information Retrieval System (1.1004101)<br/>
 1935: Randomized Binary Search Technique (1.0225154)<br/>
@@ -202,7 +199,7 @@ The following method goes in the QueriesPerformer.java file:
 2990: Effective Information Retrieval Using Term Accuracy (0.87130356)<br/>
 2519: On the Problem of Communicating Complex Information (0.7863115)<br/>
 
-<p style="text-align:justify;">Searching for ["Information" AND "Retrieval"], results found: 23<p>
+##### Searching for ["Information" AND "Retrieval"], results found: 23
 1457: Data Manipulation and Programming Problemsin Automatic Information Retrieval (1.180699)<br/>
 891: Everyman's Information Retrieval System (1.1004101)<br/>
 1935: Randomized Binary Search Technique (1.0225154)<br/>
@@ -214,7 +211,7 @@ The following method goes in the QueriesPerformer.java file:
 2990: Effective Information Retrieval Using Term Accuracy (0.87130356)<br/>
 2519: On the Problem of Communicating Complex Information (0.7863115)<br/>
 
-<p style="text-align:justify;">Searching for [+"Retrieval" "Information" NOT "Database"], results found: 54<p>
+##### Searching for [+"Retrieval" "Information" NOT "Database"], results found: 54
 1457: Data Manipulation and Programming Problemsin Automatic Information Retrieval (1.180699)<br/>
 891: Everyman's Information Retrieval System (1.1004101)<br/>
 1935: Randomized Binary Search Technique (1.0225154)<br/>
@@ -226,7 +223,7 @@ The following method goes in the QueriesPerformer.java file:
 2990: Effective Information Retrieval Using Term Accuracy (0.87130356)<br/>
 2519: On the Problem of Communicating Complex Information (0.7863115)<br/>
 
-<p style="text-align:justify;">Searching for [Info*], results found: 193<p>
+##### Searching for [Info*], results found: 193
 222: Coding Isomorphisms (1.0)<br/>
 272: A Storage Allocation Scheme for ALGOL 60 (1.0)<br/>
 396: Automation of Program  Debugging (1.0)<br/>
@@ -238,7 +235,7 @@ The following method goes in the QueriesPerformer.java file:
 644: A String Language for Symbol Manipulation Based on ALGOL 60 (1.0)<br/>
 655: COMIT as an IR Language (1.0)<br/>
 
-<p style="text-align:justify;">Searching for ['Information Retrieval'~5], results found: 159<p>
+#####Searching for ['Information Retrieval'~5], results found: 159
 2160: Canonical Structure in Attribute Based File Organization (0.471206)<br/>
 2832: Faster Retrieval from Context Trees (Corrigendum) (0.2385921)<br/>
 2905: Perfect Hashing Functions: A SingleProbe Retrieving Method for Static Sets (0.15906142)<br/>
@@ -309,8 +306,7 @@ The following method goes in the QueriesPerformer.java file:
 
 
 ### Tuning the Lucene Score
-<p style="text-align:justify;">Results with classic Similarity: 
-</p>
+#####Results with classic Similarity: 
 
 3189: An Algebraic Compiler for the FORTRAN Assembly Program (1.0367663)<br/>
 1459: Requirements for Real-Time Languages (0.9427518)<br/>
@@ -323,8 +319,8 @@ The following method goes in the QueriesPerformer.java file:
 2944: Shifting Garbage Collection Overhead to Compile Time (0.7542014)<br/>
 637: A NELIAC-Generated 7090-1401 Compiler (0.74336267)<br/>
 
-<p style="text-align:justify;">Results with custom Similarity: 
-</p>
+##### Results with custom Similarity: 
+
 
 3189: An Algebraic Compiler for the FORTRAN Assembly Program (1.2404597)<br/>
 1459: Requirements for Real-Time Languages (1.1420841)<br/>
@@ -337,9 +333,11 @@ The following method goes in the QueriesPerformer.java file:
 2944: Shifting Garbage Collection Overhead to Compile Time (0.9136672)<br/>
 637: A NELIAC-Generated 7090-1401 Compiler (0.8994863)<br/>
 
-<p style="text-align:justify;">Effect of new parameters:
-</p>
+##### Effect of new parameters:
 
-## Conclusion
-<p style="text-align:justify;">
-</p>
+1. tf : measure how often a term appears in the document 
+2. idf : measure how often the term appears across the index
+3. coord: number of terms in the query that were found in the document
+
+The way we modified the tf function gave it more importance than before so the difference in results could mean that we find more occurence of [compiler program] in *Program Translation Viewed as a General Data Processing Problem* than in *A Note on the Use of a Digital Computerfor Doing Tedious Algebra and Programming*. 
+What also changed was the coord, which was given less importance (fraction -> sqrt(fraction)). It means that we care less about the fact that all the words of the query are in the document. 
